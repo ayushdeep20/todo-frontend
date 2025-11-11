@@ -17,11 +17,21 @@ export default function App() {
   const [openWeeks, setOpenWeeks] = useState({});
   const [search, setSearch] = useState("");
 
+  // Fetch tasks from backend
   useEffect(() => {
     axios.get(`${API}/tasks`)
       .then(res => setTasks(res.data))
       .catch(err => console.log(err));
   }, []);
+
+  // ✅ Automatically set date input to current datetime when modal opens
+  useEffect(() => {
+    if (showModal && !editingTask) {
+      const now = new Date();
+      const iso = now.toISOString().slice(0, 16);
+      setNewDateTime(iso);
+    }
+  }, [showModal, editingTask]);
 
   function startOfWeekMonday(date) {
     const d = new Date(date);
@@ -63,7 +73,6 @@ export default function App() {
       }).then(res => {
         setTasks(tasks.map(t => t._id === editingTask._id ? res.data : t));
       });
-
     } else {
       axios.post(`${API}/tasks`, {
         title: newTitle,
@@ -216,8 +225,12 @@ export default function App() {
             <textarea className="w-full px-3 py-2 rounded-xl border" placeholder="Description"
               value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
 
-            <input type="datetime-local" className="w-full px-3 py-2 rounded-xl border"
-              value={newDateTime} onChange={(e) => setNewDateTime(e.target.value)} />
+            <input 
+              type="datetime-local"
+              className="w-full px-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
+              value={newDateTime}
+              onChange={(e) => setNewDateTime(e.target.value)}
+            />
 
             <select className="w-full px-3 py-2 rounded-xl border"
               value={newPriority} onChange={(e) => setNewPriority(e.target.value)}>
