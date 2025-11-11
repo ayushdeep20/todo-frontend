@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+#root {
+  max-width: 420px; /* typical modern mobile width */
+  margin: 0 auto;   /* center horizontally */
+  background: white;
+  min-height: 100vh;
+}
